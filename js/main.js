@@ -10,10 +10,17 @@ class ImageEditor {
         this.downloadBtn = this.get("downloadBtn");
         this.greyscaleBtn = this.get("greyscaleBtn");
         this.addTextBtn = this.get("addTextBtn");
+        this.text = this.get("text");
+        this.text_size = this.get("text_size");
+        this.text_color = this.get("text_color");
+        this.text_font = this.get("text_font");
+        this.text_boldness = this.get("text_boldness");
+        this.addTextBtn = this.get("addTextBtn");
         this.imagename = "";
         this.image = new Image();
         this.registerEvents();
         this.imageData = null;
+        this.ctx = null;
     }
 
     registerEvents() {
@@ -28,7 +35,10 @@ class ImageEditor {
             this.uploader.addEventListener("change", (e) => {
                 this.imagename = this.uploader.files[0].name;
                 this.ctx = this.canvas.getContext("2d");
+                this.ctx.imageSmoothingEnabled = false;
                 this.image.src = this.imagename;
+                this.canvas.width = this.image.width;
+                this.canvas.height = this.image.height;
             });
 
             this.image.addEventListener("load", () => {
@@ -48,7 +58,9 @@ class ImageEditor {
         if (this.addTextBtn) {
 
             this.addTextBtn.addEventListener("click", () => {
-                console.log("hjer");
+            
+                this.applyAddText();
+
             });
         }
 
@@ -64,7 +76,8 @@ class ImageEditor {
 
     applyGreyScale() {
 
-        for (let i = 0; i < this.imageData.data.length; i++) {
+        if (!this.ctx) return;
+        for (let i = 0; i < this.imageData.data.length; i+=4) {
             let avg = parseInt((this.imageData.data[i] + this.imageData.data[i + 1] + this.imageData.data[i + 2]) / 3);
             this.imageData.data[i] = this.imageData.data[i+1] = this.imageData.data[i+2] = avg;
         }
@@ -73,17 +86,24 @@ class ImageEditor {
     }
 
     applyAddText() {
-        
+        if (!this.ctx) return;
+        this.ctx.fillStyle = this.text_color.value;
+        this.ctx.font = `${this.text_boldness.checked ? 'bold': ''} ${this.text_size.value*8}px ${this.text_font.value}`;
+        console.log(this.ctx.font);
+        this.ctx.fillText(this.text.value, 0, (this.canvas.height/2));
     }
 
     downloadImage() {
+
+        if (!this.ctx) return;
         const downloadLink = document.createElement("a");
         downloadLink.download = "image.png";
         downloadLink.href = this.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
         downloadLink.style.display = "none";
         document.body.appendChild(downloadLink);
         downloadLink.click();
-    }
+   }
+
 }
 
 document.addEventListener("DOMContentLoaded", () => main());

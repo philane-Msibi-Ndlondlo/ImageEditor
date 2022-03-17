@@ -1,45 +1,45 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>HTML</title>a
-        <style>
-        
-            .center {
-                width: 50px;
-                height: 500px;
-                min-width: 500px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                border: 2px solid white;
-
-            }
-
-            body {
-                
-                width: 100%;
-                height: 100vh;
-                background: #000;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-            }
-
-            img {width: 100%; height: 100%}    
-
-
-        </style>
+        <title>HTML</title>
+        <link rel="stylesheet" type="text/css" href="./css/main.css">
     </head>
     <body>
         <div class="center">
-            <input type="file" id="image-uploader" style="display:none;"> 
-            <button id="upload-btn">Upload Image</button>
-            <button id="greyscaleBtn">Greyscale</button>
-            <button id="downloadBtn">Download</button>
-            <button id="addTextBtn">Add Text</button>
-            <canvas id="canvas" width="500" height="400"></canvas>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="properties">
+            <div class="prop-item">
+                <p class="prop-title">Image</p>
+                <button id="upload-btn">Upload Image</button>
+                <input type="file" id="image-uploader" style="display:none;"> 
+            </div>
+            <div class="prop-item">
+                <p class="prop-title">Text</p>
+                <div class="prop-field">
+                    <textarea id="text" placeholder="Enter Text Here..."></textarea>
+                    <input type="number" id="text_size" value="14">
+                    <input type="color" id="text_color">
+                    <select id="text_font">
+                        <option value="">Select Font Type</option>
+                        <option value="serif">Serif</option>
+                    </select>
+                    <div>
+                        <label for="text_boldness">Bold</label>
+                        <input type="checkbox" id="text_boldness">
+                    </div>
+                </div>
+                <button id="addTextBtn">Add Text</button>
+            </div>
+            <div class="prop-item">
+                <p class="prop-title">Overlay</p>
+                <button id="greyscaleBtn">Greyscale</button>
+            </div>
+            <div class="prop-item">
+                <p class="prop-title">Export</p>
+                <button id="downloadBtn">Download</button>
+            </div>
+
         </div>
         <script src="./js/main.js"></script>
     </body>
