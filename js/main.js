@@ -16,11 +16,14 @@ class ImageEditor {
         this.text_font = this.get("text_font");
         this.text_boldness = this.get("text_boldness");
         this.addTextBtn = this.get("addTextBtn");
+        this.imagePreviews = document.querySelectorAll('.image-preview');
         this.imagename = "";
         this.image = new Image();
         this.registerEvents();
         this.imageData = null;
         this.ctx = null;
+        this.textX = 0;
+        this.textY = 0;
     }
 
     registerEvents() {
@@ -33,13 +36,14 @@ class ImageEditor {
 
                 this.image.crossOrigin = "anonymous";
             this.uploader.addEventListener("change", (e) => {
-                this.imagename = this.uploader.files[0].name;
-                this.ctx = this.canvas.getContext("2d");
-                this.ctx.imageSmoothingEnabled = false;
-                this.image.src = this.imagename;
-                this.canvas.width = this.image.width;
-                this.canvas.height = this.image.height;
+                this.loadImageToCanvas(this.uploader.files[0].name);
             });
+
+            this.imagePreviews.forEach(img => {
+                img.addEventListener('click', e => {
+                    this.loadImageToCanvas(e.target.src);
+                })
+            })
 
             this.image.addEventListener("load", () => {
                 console.log(this);
@@ -49,23 +53,18 @@ class ImageEditor {
         }
 
         if (this.downloadBtn) {
-
             this.downloadBtn.addEventListener("click", () => {
                 this.downloadImage();
             });
         }
 
         if (this.addTextBtn) {
-
             this.addTextBtn.addEventListener("click", () => {
-            
                 this.applyAddText();
-
             });
         }
 
         if (this.greyscaleBtn) {
-
             this.greyscaleBtn.addEventListener("click", () => {
                 this.applyGreyScale();
             });
@@ -89,8 +88,14 @@ class ImageEditor {
         if (!this.ctx) return;
         this.ctx.fillStyle = this.text_color.value;
         this.ctx.font = `${this.text_boldness.checked ? 'bold': ''} ${this.text_size.value*8}px ${this.text_font.value}`;
-        console.log(this.ctx.font);
-        this.ctx.fillText(this.text.value, 0, (this.canvas.height/2));
+        this.textY = (this.canvas.height/2);
+        this.ctx.fillText(this.text.value, this.textX, this.textY);
+        this.canvas.onmousedown = this.dragText;
+    }
+
+    dragText(textElem) {
+        this.textX = textElem.pageX;
+        this.textY = textElem.pageY;
     }
 
     downloadImage() {
@@ -104,6 +109,14 @@ class ImageEditor {
         downloadLink.click();
    }
 
+   loadImageToCanvas(imgFile) {
+        this.imagename = imgFile;
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.imageSmoothingEnabled = false;
+        this.image.src = this.imagename;
+        this.canvas.width = this.image.width;
+        this.canvas.height = this.image.height;
+   }
 }
 
 document.addEventListener("DOMContentLoaded", () => main());
